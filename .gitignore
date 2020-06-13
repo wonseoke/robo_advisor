@@ -1,0 +1,6 @@
+# .gitignore
+
+# ignore secret environment variable values in the ".env" file:
+.env
+
+ALPHAVANTAGE_API_KEY="JTTOPM69DVRL0KIS"

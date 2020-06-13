@@ -48,3 +48,11 @@ From within the virtual environment, demonstrate your ability to run the Python 
 
 python app/robo_advisor.py
 If you see the example output, you're ready to move on to project development. This would be a great time to make any desired modifications to your project's "README.md" file (like adding instructions for how to setup and run the app like you've just done), and then make your first commit, with a message like "Setup the repo".
+
+Security Requirements
+Your program will need an API Key to issue requests to the AlphaVantage API. But the program's source code should absolutely not include the secret API Key value. Instead, you should set an environment variable called ALPHAVANTAGE_API_KEY, and your program should read the API Key from this environment variable at run-time.
+
+You are encouraged to use a "dotenv" approach to setting project-specific environment variables by using a file called ".env" in conjunction with the dotenv package. Example ".env" contents:
+
+ALPHAVANTAGE_API_KEY="abc123"
+The ".env" file should absolutely not be tracked in version control or included in your GitHub repository. Use a local ".gitignore" file for this purpose (see "Repository Requirements" section above).
