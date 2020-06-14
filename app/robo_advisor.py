@@ -137,13 +137,13 @@ print("NDAQ Low: ", to_usd(float(recent_low_NDAQ)))
 #If rounded to 2 decimals (USD value in this case) is equal, then the recommendation should be HOLD. If queried NDAQ, it should just say HOLD.
 
 recommend = 0
-""" average_price = (float(recent_high) + float(recent_low)) / 2
+average_price = (float(recent_high) + float(recent_low)) / 2
 average_price_NDAQ = (float(recent_high_NDAQ) + float(recent_low_NDAQ)) / 2
 calc_stock = float(latest_close) / float(average_price) 
 calc_NDAQ = float(latest_close_NDAQ) / float(average_price_NDAQ)
 
-print(float(average_price))
-print(float(average_price_NDAQ))
+print(float(calc_stock))
+print(float(calc_NDAQ))
 
 if float(calc_stock) > float(calc_NDAQ):
     recommend = "SELL"
@@ -151,12 +151,8 @@ elif float(calc_stock) == float(calc_NDAQ):
     recommend = "HOLD"
 else:
     recommend = "BUY"
- """
 
-
-
-
-
+reason = "We are recommending to ", recommend, "as such"
 
 print("-------------------------")
 print("SELECTED SYMBOL: " + symbol)
@@ -170,7 +166,7 @@ print(f"RECENT HIGH: {to_usd(float(recent_high))}")
 print(f"RECENT LOW: {to_usd(float(recent_low))}")
 print("-------------------------")
 print(f"RECOMMENDATION: {recommend}")
-print("RECOMMENDATION REASON: TODO")
+print(f"RECOMMENDATION REASON: {reason}")
 print("-------------------------")
 print(f"WRITING DATA TO CSV: {csv_file_path} ")
 print("-------------------------")
