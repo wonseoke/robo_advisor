@@ -36,7 +36,7 @@ list_sec = [str(i["Symbol"]) for i in listed_stocks_info] #list of NASDAQ listed
 if symbol in list_sec:
     request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}"        
 else:
-    print("Not a valid symbol, so exiting the query") & exit()
+    print("Not a valid symbol, therefore we are exiting the query") & exit()
 
 
 #
@@ -134,25 +134,25 @@ print("NDAQ Low: ", to_usd(float(recent_low_NDAQ)))
 #If a stock's latest_price/average_price is higher than Nasdaq's latest_price/average_price, it could mean it is further away from market's performance
 #This could be a signal that the stock is overpriced versus the market; Then the recommendation should be SELL.
 #Vice versa, if the stock's latest_price/average_price is lower, then the recommendation should be BUY.
-#If rounded to 2 decimals (USD value in this case) is equal, then the recommendation should be HOLD. If queried NDAQ, it should just say HOLD.
+#For NDAQ look up, the recommendation should be HOLD as the calculated value will be the same.
 
 recommend = 0
+reason = 0
 average_price = (float(recent_high) + float(recent_low)) / 2
 average_price_NDAQ = (float(recent_high_NDAQ) + float(recent_low_NDAQ)) / 2
 calc_stock = float(latest_close) / float(average_price) 
 calc_NDAQ = float(latest_close_NDAQ) / float(average_price_NDAQ)
 
-print(float(calc_stock))
-print(float(calc_NDAQ))
 
 if float(calc_stock) > float(calc_NDAQ):
     recommend = "SELL"
+    reason = "We are recommending to sell the queried stock as the stock is considered over-priced compared to the overall market"
 elif float(calc_stock) == float(calc_NDAQ):
     recommend = "HOLD"
+    reason = "We are recommending to hold the queried stock as NDAQ is simply tracking the market overall"
 else:
     recommend = "BUY"
-
-reason = "We are recommending to ", recommend, "as such"
+    reason = "We are recommending to buy the queried stock as the stock is considered under-priced compared to the overall market"
 
 print("-------------------------")
 print("SELECTED SYMBOL: " + symbol)
