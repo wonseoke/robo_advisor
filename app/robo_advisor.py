@@ -122,9 +122,9 @@ for date in dates:
 
 recent_high_NDAQ = max(high_prices_NDAQ)
 recent_low_NDAQ = min(low_prices_NDAQ)
-print("NDAQ Latest: ", to_usd(float(latest_close_NDAQ)))
-print("NDAQ High: ", to_usd(float(recent_high_NDAQ)))
-print("NDAQ Low: ", to_usd(float(recent_low_NDAQ)))
+#print("NDAQ Latest: ", to_usd(float(latest_close_NDAQ)))
+#print("NDAQ High: ", to_usd(float(recent_high_NDAQ)))
+#print("NDAQ Low: ", to_usd(float(recent_low_NDAQ)))
 #
 #
 #
