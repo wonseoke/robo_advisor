@@ -16,7 +16,8 @@ def to_usd(my_price):
 #
 api_key = os.environ.get("ALPHAVANTAGE_API_KEY") 
 
-symbol = "IBM" #TODO to accept USER INPUT
+symbol = input("Please input the stock symbol in question: ") #TODO to accept USER INPUT
+
 
 request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}"
 
@@ -84,7 +85,7 @@ with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writin
 
 
 print("-------------------------")
-print("SELECTED SYMBOL: XYZ")
+print("SELECTED SYMBOL: " + symbol)
 print("-------------------------")
 print("REQUESTING STOCK MARKET DATA...")
 print("REQUEST AT: 2018-02-20 02:00pm")  ## TODO : get date time module
