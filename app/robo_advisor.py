@@ -17,8 +17,12 @@ def to_usd(my_price):
 #
 api_key = os.environ.get("ALPHAVANTAGE_API_KEY") 
 
-symbol = input("Please input the stock symbol in question: ") #TODO to accept USER INPUT
+symbol = input("Please input the stock symbol in question: ") #to accept USER INPUT
 
+
+#
+#SYMBOL LOOK UP to NASDAQ LIST
+#
 csv_file_path2 = os.path.join(os.path.dirname(__file__), "..", "data", "listed.csv") #to call a listed securities information from NASDAQ (http://nasdaqtrader.com/dynamic/SymDir/nasdaqlisted.txt)
 
 listed_stocks_info = [] #list of all information
@@ -33,7 +37,12 @@ if symbol in list_sec:
     request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}"        
 else:
     print("Not a valid symbol, so exiting the query") & exit()
-    
+
+
+#
+#SYMBOL LOOK UP to NASDAQ LIST
+#
+
 response = requests.get(request_url)
 #print(type(response)) #> <class 'requests.models.Response'>
 #print(response.status_code) #>200, which is the code of http response that lets us know how successful this request was
@@ -71,9 +80,7 @@ for date in dates:
 
 recent_high = max(high_prices)
 recent_low = min(low_prices)
-#
-#
-#
+
 #csv_file_path = "data/prices.csv" # a relative filepath
 
 csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", "prices.csv")
@@ -95,6 +102,48 @@ with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writin
         })
 
 
+#
+#NASDAQ Prices look up
+#
+request_url_NDAQ = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=NDAQ&apikey={api_key}"
+response_NDAQ = requests.get(request_url_NDAQ)
+parsed_response_NDAQ = json.loads(response.text)
+tsd_NDAQ = parsed_response_NDAQ["Time Series (Daily)"]
+
+latest_close_NDAQ = tsd_NDAQ[latest_day]["4. close"]
+high_prices_NDAQ = []
+low_prices_NDAQ = []
+
+for date in dates:
+    high_price_NDAQ = tsd_NDAQ[date]["2. high"]
+    high_prices_NDAQ.append(float(high_price_NDAQ))
+    low_price_NDAQ = tsd_NDAQ[date]["3. low"]
+    low_prices_NDAQ.append(float(low_price_NDAQ))
+
+recent_high_NDAQ = max(high_prices_NDAQ)
+recent_low_NDAQ = min(low_prices_NDAQ)
+print("NDAQ Latest: ", to_usd(float(latest_close_NDAQ)))
+print("NDAQ High: ", to_usd(float(recent_high_NDAQ)))
+print("NDAQ Low: ", to_usd(float(recent_low_NDAQ)))
+#
+#
+#
+
+#Recommendation logic is comparing the Nasdaq(market) performance vs. Inputted stock's performance
+#This is done by comparing the Latest Price vs. average price (calculated by (recent high + recent low)/2 ))
+#If a stock's latest_price/average_price is higher than Nasdaq's latest_price/average_price, it could mean it is further away from market's performance
+#This could be a signal that the stock is overpriced versus the market; Then the recommendation should be SELL.
+#Vice versa, if the stock's latest_price/average_price is lower, then the recommendation should be BUY.
+#If rounded to 2 decimals (USD value in this case) is equal, then the recommendation should be HOLD. If queried NDAQ, it should just say HOLD.
+
+recommend = 0
+average_price = (float(recent_high) + float(recent_low)) / 2
+
+
+if float(latest_close) < float(recent_high):
+    recommend = "BUY PLEASE"
+else:
+    recommend = "DO NOT BUY"
 
 print("-------------------------")
 print("SELECTED SYMBOL: " + symbol)
@@ -107,7 +156,7 @@ print(f"LATEST CLOSE: {to_usd(float(latest_close))}")
 print(f"RECENT HIGH: {to_usd(float(recent_high))}")
 print(f"RECENT LOW: {to_usd(float(recent_low))}")
 print("-------------------------")
-print("RECOMMENDATION: BUY!")
+print(f"RECOMMENDATION: {recommend}")
 print("RECOMMENDATION REASON: TODO")
 print("-------------------------")
 print(f"WRITING DATA TO CSV: {csv_file_path} ")
