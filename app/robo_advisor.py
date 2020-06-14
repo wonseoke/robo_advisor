@@ -4,6 +4,7 @@ import csv
 import json
 import os
 from dotenv import load_dotenv
+from datetime import datetime
 
 import requests
 
@@ -18,9 +19,21 @@ api_key = os.environ.get("ALPHAVANTAGE_API_KEY")
 
 symbol = input("Please input the stock symbol in question: ") #TODO to accept USER INPUT
 
+csv_file_path2 = os.path.join(os.path.dirname(__file__), "..", "data", "listed.csv") #to call a listed securities information from NASDAQ (http://nasdaqtrader.com/dynamic/SymDir/nasdaqlisted.txt)
 
-request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}"
+listed_stocks_info = [] #list of all information
+with open(csv_file_path2, "r") as csv_file2:
+    reader = csv.DictReader(csv_file2)
+    for od in reader:
+        listed_stocks_info.append(dict(od))
 
+list_sec = [str(i["Symbol"]) for i in listed_stocks_info] #list of NASDAQ listed symbols
+
+if symbol in list_sec:
+    request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}"        
+else:
+    print("Not a valid symbol, so exiting the query") & exit()
+    
 response = requests.get(request_url)
 #print(type(response)) #> <class 'requests.models.Response'>
 #print(response.status_code) #>200, which is the code of http response that lets us know how successful this request was
@@ -40,13 +53,12 @@ latest_day = dates[0] #"2020-06-12"
 latest_close = tsd[latest_day]["4. close"] #> 1000000
 
 
+
+# datetime object containing current date and time
+now = datetime.now()
+dt_string = now.strftime("%H:%M %p" + " on " + "%Y-%m-%d")
+
 #get high price from each day
-
-#high_price = [10, 20, 30]
-# maximum of all high prices
-#recent_high = max(high_price)
-
-
 high_prices = []
 low_prices = []
 
@@ -88,7 +100,7 @@ print("-------------------------")
 print("SELECTED SYMBOL: " + symbol)
 print("-------------------------")
 print("REQUESTING STOCK MARKET DATA...")
-print("REQUEST AT: 2018-02-20 02:00pm")  ## TODO : get date time module
+print("Run at: ", dt_string)  ## TODO : get date time module
 print("-------------------------")
 print(f"LATEST DAY: {last_refreshed}")
 print(f"LATEST CLOSE: {to_usd(float(latest_close))}")
