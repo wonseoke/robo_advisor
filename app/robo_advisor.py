@@ -107,7 +107,7 @@ with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writin
 #
 request_url_NDAQ = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=NDAQ&apikey={api_key}"
 response_NDAQ = requests.get(request_url_NDAQ)
-parsed_response_NDAQ = json.loads(response.text)
+parsed_response_NDAQ = json.loads(response_NDAQ.text)
 tsd_NDAQ = parsed_response_NDAQ["Time Series (Daily)"]
 
 latest_close_NDAQ = tsd_NDAQ[latest_day]["4. close"]
@@ -137,13 +137,26 @@ print("NDAQ Low: ", to_usd(float(recent_low_NDAQ)))
 #If rounded to 2 decimals (USD value in this case) is equal, then the recommendation should be HOLD. If queried NDAQ, it should just say HOLD.
 
 recommend = 0
-average_price = (float(recent_high) + float(recent_low)) / 2
+""" average_price = (float(recent_high) + float(recent_low)) / 2
+average_price_NDAQ = (float(recent_high_NDAQ) + float(recent_low_NDAQ)) / 2
+calc_stock = float(latest_close) / float(average_price) 
+calc_NDAQ = float(latest_close_NDAQ) / float(average_price_NDAQ)
 
+print(float(average_price))
+print(float(average_price_NDAQ))
 
-if float(latest_close) < float(recent_high):
-    recommend = "BUY PLEASE"
+if float(calc_stock) > float(calc_NDAQ):
+    recommend = "SELL"
+elif float(calc_stock) == float(calc_NDAQ):
+    recommend = "HOLD"
 else:
-    recommend = "DO NOT BUY"
+    recommend = "BUY"
+ """
+
+
+
+
+
 
 print("-------------------------")
 print("SELECTED SYMBOL: " + symbol)
